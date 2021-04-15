@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\BateauPlace;
 use Illuminate\Database\Seeder;
+use App\Models\BateauCoordonnee;
 
-class BateauPlaceSeeder extends Seeder
+class BateauCoordonneesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,49 +15,49 @@ class BateauPlaceSeeder extends Seeder
     public function run()
     {
         // Porte-avions A-1, A-2, A-3, A-4, A-5
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'A',
             'colonne' => 1,
             'bateau_id' => 1,
         ]);
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'A',
             'colonne' => 2,
             'bateau_id' => 1,
         ]);
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'A',
             'colonne' => 3,
             'bateau_id' => 1,
         ]);
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'A',
             'colonne' => 4,
             'bateau_id' => 1,
         ]);
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'A',
             'colonne' => 5,
             'bateau_id' => 1,
         ]);
 
         // cuirasse B-2, C-2, D-2, E-2
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'B',
             'colonne' => 2,
             'bateau_id' => 2,
         ]);
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'C',
             'colonne' => 2,
             'bateau_id' => 2,
         ]);
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'D',
             'colonne' => 2,
             'bateau_id' => 2,
         ]);
-        BateauPlace::create([
+        BateauCoordonnee::create([
             'rangee' => 'E',
             'colonne' => 2,
             'bateau_id' => 2,

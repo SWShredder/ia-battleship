@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             BateauSeeder::class,
             ResultatMissileSeeder::class,
-            BateauPlaceSeeder::class,
+            BateauCoordonneesSeeder::class,
             ]);
     }
 }

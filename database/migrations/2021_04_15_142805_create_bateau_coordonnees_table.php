@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBateauxPlacesTable extends Migration
+class CreateBateauCoordonneesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateBateauxPlacesTable extends Migration
      */
     public function up()
     {
-        Schema::create('bateaux_places', function (Blueprint $table) {
+        Schema::create('bateau_coordonnees', function (Blueprint $table) {
             $table->id();
             $table->char('rangee', 1);
             $table->unsignedTinyInteger('colonne');
@@ -29,6 +29,6 @@ class CreateBateauxPlacesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bateaux_places');
+        Schema::dropIfExists('bateau_coordonnees');
     }
 }

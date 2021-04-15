@@ -20,6 +20,7 @@ class BateauCollection extends ResourceCollection
         foreach($bateau_ids as $id) {
             $bateaux[] = $this->collection->where('bateau_id', $id)->first();
         }
+
         return [
             'data' => $bateaux,
         ];

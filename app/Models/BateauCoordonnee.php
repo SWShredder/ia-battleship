@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BateauPlace extends Model
+class BateauCoordonnee extends Model
 {
     use HasFactory;
-    protected $table = 'bateaux_places';
+    protected $table = 'bateau_coordonnees';
 
     public function bateau()
     {

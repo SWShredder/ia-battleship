@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\BateauPlace;
+use App\Models\BateauCoordonnee;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BateauResource extends JsonResource
@@ -16,11 +16,8 @@ class BateauResource extends JsonResource
     public function toArray($request)
     {
         $bateau_nom = $this->bateau->nom;
-        $coords = [];
-        $bateau_coords = BateauPlace::where('bateau_id', $this->bateau_id)->get();
-        foreach ($bateau_coords as $coord) {
-            $coords[] = $coord->rangee . '-' . $coord->colonne;
-        }
+        $coords = $this->bateau->coordonnees();
+
         return [
             $bateau_nom => $coords,
         ];

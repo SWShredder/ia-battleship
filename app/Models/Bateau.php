@@ -10,8 +10,18 @@ class Bateau extends Model
     use HasFactory;
     protected $table = 'bateaux';
 
-    public function bateaux_places()
+    public function bateau_coordonnees()
     {
-        return $this->hasMany('App\Models\BateauxPlace');
+        return $this->hasMany('App\Models\BateauCoordonnee');
+    }
+
+    public function coordonnees()
+    {
+        $coords = [];
+        $bateau_coords = $this->bateau_coordonnees()->get();
+        foreach ($bateau_coords as $coord) {
+            $coords[] = $coord->rangee . '-' . $coord->colonne;
+        }
+        return $coords;
     }
 }
