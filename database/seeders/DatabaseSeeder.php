@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\ResultatMissile;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\BateauSeeder;
+use Database\Seeders\BateauPlaceSeeder;
+use Database\Seeders\ResultatMissileSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,7 +20,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             BateauSeeder::class,
-            ResultatMissile::class,
+            ResultatMissileSeeder::class,
+            BateauPlaceSeeder::class,
             ]);
     }
 }

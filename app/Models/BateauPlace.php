@@ -9,4 +9,9 @@ class BateauPlace extends Model
 {
     use HasFactory;
     protected $table = 'bateaux_places';
+
+    public function bateau()
+    {
+        return $this->belongsTo('App\Models\Bateau');
+    }
 }

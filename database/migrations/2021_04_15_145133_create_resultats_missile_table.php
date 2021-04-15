@@ -14,7 +14,7 @@ class CreateResultatsMissileTable extends Migration
     public function up()
     {
         Schema::create('resultats_missile', function (Blueprint $table) {
-            $table->id()->startingValue(0);
+            $table->unsignedTinyInteger('id')->unique();
             $table->string('nom', 20)->unique();
             $table->timestamps();
         });

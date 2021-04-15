@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BateauController;
+use App\Http\Controllers\MissileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('battleship-ia')->middleware(['auth:sanctum'])->group(function () {
-    Route::get('/users');
+// ->middleware(['auth:sanctum'])
+Route::prefix('battleship-ia')->group(function () {
+    Route::post('bateaux/placer', [BateauController::class, 'placer']);
+    Route::post('missiles', [MissileController::class, 'lancer']);
+    Route::put('missiles/{coordonees}', [MissileController::class, 'store']);
 });
 

@@ -17,7 +17,7 @@ class CreateMissilesTable extends Migration
             $table->id();
             $table->char('rangee', 1);
             $table->unsignedTinyInteger('colonne');
-            $table->foreignId('resultat_id')->references('id')->on('resultats_missile');
+            $table->unsignedTinyInteger('resultat_id')->references('id')->on('resultats_missile');
             $table->timestamps();
         });
     }
