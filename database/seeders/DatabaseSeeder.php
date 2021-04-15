@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ResultatMissile;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\BateauSeeder;
@@ -15,6 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([UserSeeder::class, BateauSeeder::class]);
+        $this->call([
+            UserSeeder::class,
+            BateauSeeder::class,
+            ResultatMissile::class,
+            ]);
     }
 }
