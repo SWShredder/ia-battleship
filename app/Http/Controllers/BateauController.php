@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Missile;
+use App\IA\PlacementBateaux;
 use App\Models\BateauCoordonnee;
 use App\Http\Resources\BateauCollection;
 
@@ -18,6 +20,12 @@ class BateauController extends Controller
      */
     public function placer()
     {
+        // Vide les tables de base de données qui servent pendant la partie
+        BateauCoordonnee::truncate();
+        Missile::truncate();
+        // Placement des bateaux
+        $placement = new PlacementBateaux();
+        $placement->debuter();
         $bateaux = BateauCoordonnee::all();
         return new BateauCollection($bateaux);
     }
