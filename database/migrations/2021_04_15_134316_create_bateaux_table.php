@@ -4,6 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Migration pour la table bateaux
+ * @author Yanik Sweeney
+ */
 class CreateBateauxTable extends Migration
 {
     /**

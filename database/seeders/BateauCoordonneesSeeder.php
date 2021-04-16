@@ -5,6 +5,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\BateauCoordonnee;
 
+/**
+ * Seeder pour la table bateau_coordonnees. Ne sert que pour les tests initiaux
+ * @author Yanik Sweeney
+ */
 class BateauCoordonneesSeeder extends Seeder
 {
     /**

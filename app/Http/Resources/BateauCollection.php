@@ -5,6 +5,10 @@ namespace App\Http\Resources;
 use App\Models\Bateau;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
+/**
+ * Retourne une ResourceCollection pour le placement de bateaux
+ * @author Yanik Sweeney
+ */
 class BateauCollection extends ResourceCollection
 {
     /**

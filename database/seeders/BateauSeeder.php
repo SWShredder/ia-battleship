@@ -5,6 +5,10 @@ namespace Database\Seeders;
 use App\Models\Bateau;
 use Illuminate\Database\Seeder;
 
+/**
+ * Seeder pour la table bateaux. Ces données sont les données utilisées en production
+ * @author Yanik Sweeney
+ */
 class BateauSeeder extends Seeder
 {
     /**

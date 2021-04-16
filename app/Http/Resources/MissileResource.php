@@ -4,6 +4,10 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * JsonResource pour un missile
+ * @author Yanik Sweeney
+ */
 class MissileResource extends JsonResource
 {
     /**
@@ -14,6 +18,8 @@ class MissileResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            "missile" => $this->rangee . '-' . $this->colonne
+        ];
     }
 }

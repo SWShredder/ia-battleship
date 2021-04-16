@@ -5,6 +5,10 @@ namespace Database\Seeders;
 use App\Models\ResultatMissile;
 use Illuminate\Database\Seeder;
 
+/**
+ * Seeder pour la table resultats_missile. Ces données sont utilisées en production
+ * @author Yanik Sweeney
+ */
 class ResultatMissileSeeder extends Seeder
 {
     /**

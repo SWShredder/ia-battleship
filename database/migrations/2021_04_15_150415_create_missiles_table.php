@@ -4,6 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Migration pour la table missiles
+ * @author Yanik Sweeney
+ */
 class CreateMissilesTable extends Migration
 {
     /**

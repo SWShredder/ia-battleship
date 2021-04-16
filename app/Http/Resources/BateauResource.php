@@ -2,9 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Models\BateauCoordonnee;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * JsonResource pour un bateau placé
+ * @author Yanik Sweeney
+ */
 class BateauResource extends JsonResource
 {
     /**
