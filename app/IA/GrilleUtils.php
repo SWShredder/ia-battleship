@@ -33,4 +33,35 @@ class GrilleUtils
             default: throw new InvalidArgumentException('La rangée doit être entre 0 et 9 avec la méthode parseRangee');
         }
     }
+
+    public static function parseRangeeVersIndexNumerique($rangee)
+    {
+        switch($rangee)
+        {
+            case 'A': return 0;
+            case 'B': return 1;
+            case 'C': return 2;
+            case 'D': return 3;
+            case 'E': return 4;
+            case 'F': return 5;
+            case 'G': return 6;
+            case 'H': return 7;
+            case 'I': return 8;
+            case 'J': return 9;
+            default: throw new InvalidArgumentException('La rangée doit être entre A et J avec la méthode parseRangee');
+        }
+    }
+
+    /**
+     * Méthode permettant de faire des addition sur une rangée
+     * @param string Une lettre représentant la rangée dans une grille de battleship
+     * @param int Une valeur à additionner sur la rangée
+     * @return string Une lettre représentant le résultat de l'addition (A + 2 = C)
+     */
+    public static function additionSurRangee($rangee, $valeur)
+    {
+        $rangeeNumerique = self::parseRangeeVersIndexNumerique($rangee);
+        $rangeeNumerique += $valeur;
+        return self::parseRangee($rangeeNumerique);
+    }
 }

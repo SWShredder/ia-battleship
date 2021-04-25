@@ -6,6 +6,7 @@ use App\Models\Missile;
 use App\IA\PlacementBateaux;
 use App\Models\BateauCoordonnee;
 use App\Http\Resources\BateauCollection;
+use App\IA\LancementMissile;
 
 /**
  * Controleur pour la route /bateau
@@ -23,6 +24,7 @@ class BateauController extends Controller
         // Vide les tables de base de données qui servent pendant la partie
         BateauCoordonnee::truncate();
         Missile::truncate();
+        LancementMissile::getInstance()->reset();
         // Placement des bateaux
         $placement = new PlacementBateaux();
         $placement->debuter();

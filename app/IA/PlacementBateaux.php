@@ -49,23 +49,7 @@ class PlacementBateaux
         foreach ($bateaux as $bateau) {
             $this->placer($bateau, $addToDb);
         }
-        $this->logBateauxMap();
-    }
-
-    /**
-     * Ajoute la collision map dans le log de laravel.
-     */
-    private function logCollisionMap()
-    {
-        $message = '';
-        for ($i=0; $i < 10; $i++) {
-            for ($j=0; $j < 10; $j++) {
-                $value = $this->collisionMap[$j][$i] ? 'X' : ' ';
-                $message = $message . $value . ' ';
-            }
-            Log::info($message);
-            $message = '';
-        }
+        //$this->logBateauxMap();
     }
 
     /**
@@ -104,17 +88,17 @@ class PlacementBateaux
         } else {
 
             for ($i = 0; $i < $bateau->taille; $i++) {
-                $_x = $orientation == 0 ? $x : $x + $i;
-                $_y = $orientation == 0 ? $y + $i : $y;
-                $this->collisionMap[$_y][$_x] = true;
-                $this->bateauxMap[$_y][$_x] = $bateau->id;
+                $_y = $orientation == 0 ? $x : $x + $i;
+                $_x = $orientation == 0 ? $y + $i : $y;
+                $this->collisionMap[$_x][$_y] = true;
+                $this->bateauxMap[$_x][$_y] = $bateau->id;
 
                 // est faux seulement pour les tests
                 if ($addToDb) {
                     $coord = new BateauCoordonnee();
                     $coord->bateau()->associate($bateau);
-                    $coord->rangee = GrilleUtils::parseRangee($_x);
-                    $coord->colonne = $_y + 1;
+                    $coord->rangee = GrilleUtils::parseRangee($_y);
+                    $coord->colonne = $_x + 1;
                     $coord->save();
                 }
             }

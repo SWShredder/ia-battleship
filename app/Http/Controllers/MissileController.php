@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Missile;
 use Illuminate\Http\Request;
 use App\Http\Resources\MissileResource;
+use App\IA\LancementMissile;
 use App\Models\ResultatMissile;
 
 /**
@@ -19,9 +20,8 @@ class MissileController extends Controller
      */
     public function lancer()
     {
-        $missile = new Missile();
-        $missile->rangee = 'A';
-        $missile->colonne = 1;
+        $lancementMissile = LancementMissile::getInstance();
+        $missile = $lancementMissile->lancer();
         return new MissileResource($missile);
     }
 
