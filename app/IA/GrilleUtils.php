@@ -2,10 +2,12 @@
 
 namespace App\IA;
 
+use App\Models\Bateau;
 use InvalidArgumentException;
 
 /**
  * Utilitaires de fonctions pour aider avec la gestion de l'IA
+ * @author Yanik Sweeney
  */
 class GrilleUtils
 {
@@ -34,6 +36,11 @@ class GrilleUtils
         }
     }
 
+    /**
+     * Retourne la valeur numérique d'une rangée à partir de 0 pour A jusqu'à 9 pour J
+     * @param string Une lettre représentant la rangée de A à J inclusivement
+     * @return int Une valeur entre 0 et 9 inclusivement représentant l'index de la rangée
+     */
     public static function parseRangeeVersIndexNumerique($rangee)
     {
         switch($rangee)
@@ -63,5 +70,20 @@ class GrilleUtils
         $rangeeNumerique = self::parseRangeeVersIndexNumerique($rangee);
         $rangeeNumerique += $valeur;
         return self::parseRangee($rangeeNumerique);
+    }
+
+    /**
+     * Permet d'obtenir la taille d'un bateau en fonction du code de résultat d'un missile
+     * @param int Le résultat d'un missile
+     * @return int La taille du bateau associé
+     */
+    public static function obtenirTailleBateau($codeResultat)
+    {
+        if ($codeResultat <= 1) {
+            return 0;
+        }
+        else {
+            return Bateau::where('id', $codeResultat - 1)->first()->taille;
+        }
     }
 }

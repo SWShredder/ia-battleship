@@ -8,16 +8,17 @@ use App\IA\StateIABattleship;
 use Illuminate\Support\Facades\Log;
 use App\IA\StatesDestructionBateau\StateDestructionRecherche;
 use App\IA\StatesDestructionBateau\StateDestructionRechercheNord;
+use InvalidArgumentException;
 
 class StateDestructionBateau extends StateIABattleship
 {
-
     private $dernierMissileAyantTouche;
     private $premierMissileAyantTouche;
     private StateDestructionRecherche $stateDestructionRecherche;
     private $coordOrigineRecherche;
     private $estBateauVertical = false;
     private $estBateauHorizontal = false;
+    public $stuckCount = 0;
 
     public function __construct(LancementMissile $lancementMissile) {
         parent::__construct($lancementMissile);
@@ -32,12 +33,28 @@ class StateDestructionBateau extends StateIABattleship
     public function lancerMissile()
     {
         Log::info("StateDestructionBateau: LancerMissile");
-        if ($this->dernierMissileAyantTouche->resultat_id >= 2) {
+        $dernierMissile = $this->parent->getDernierMissileLance();
+        $missileResultat = $dernierMissile->resultat_id;
+
+        if ($missileResultat >= 2 &&
+            count($this->getMissilesAyantToucheDansSequence()) <= GrilleUtils::obtenirTailleBateau($missileResultat)) {
+
             MissileCible::truncate();
             $this->parent->setState(new StateRechercheBateau($this->parent));
             return $this->parent->getState()->lancerMissile();
         }
-        return $this->stateDestructionRecherche->obtenirProchainMissile();
+        else if ($missileResultat >= 2 &&
+        count($this->getMissilesAyantToucheDansSequence()) > GrilleUtils::obtenirTailleBateau($missileResultat)) {
+            $this->coordOrigineRecherche = $this->getMissileCoordOpposee($dernierMissile);
+            MissileCible::truncate();
+            $this->parent->ajouterMissileCible($this->coordOrigineRecherche);
+            $this->estBateauHorizontal = false;
+            $this->estBateauVertical = false;
+            return $this->stateDestructionRecherche->obtenirProchainMissile();
+        }
+        else {
+            return $this->stateDestructionRecherche->obtenirProchainMissile();
+        }
     }
 
     private function initPremierMissileAyantTouche()
@@ -60,12 +77,10 @@ class StateDestructionBateau extends StateIABattleship
         $premierMissileAyantTouche = $this->premierMissileAyantTouche;
         if ($dernierMissileAyantTouche != $premierMissileAyantTouche) {
             if ($premierMissileAyantTouche->rangee == $dernierMissileAyantTouche->rangee) {
-                Log::info("estHorizontal => true");
                 $this->estBateauVertical = false;
                 $this->estBateauHorizontal = true;
             }
             else if ($premierMissileAyantTouche->colonne == $dernierMissileAyantTouche->colonne) {
-                Log::info("estVertical => true");
                 $this->estBateauVertical = true;
                 $this->estBateauHorizontal = false;
             }
@@ -94,6 +109,9 @@ class StateDestructionBateau extends StateIABattleship
 
     public function prochaineCoordOrigineRecherche()
     {
+        if ($this->stuckCount > 2) {
+            $this->coordOrigineRecherche = $this->dernierMissileAyantTouche;
+        }
         if ($this->getEstBateauVertical()) {
             $this->estBateauHorizontal = true;
             $this->estBateauVertical = false;
@@ -123,5 +141,57 @@ class StateDestructionBateau extends StateIABattleship
     public function getEstBateauHorizontal()
     {
         return $this->estBateauHorizontal;
+    }
+
+    public function getMissilesAyantToucheDansSequence()
+    {
+        $missilesAyantTouche = [];
+        $missilesCibles = MissileCible::all();
+        foreach ($missilesCibles as $missileCible) {
+            if ($missileCible->missile()->get()->first()->resultat_id > 0) {
+                $missilesAyantTouche[] = $missileCible->missile()->get()->first();
+            }
+        }
+        return $missilesAyantTouche;
+    }
+
+    public function getMissileCoordOpposee($missile)
+    {
+        $rangee = GrilleUtils::parseRangeeVersIndexNumerique($missile->rangee);
+        $minRangee = $rangee;
+        $maxRangee = $rangee;
+        $colonne = $missile->colonne;
+        $minColonne = $colonne;
+        $maxColonne = $colonne;
+        $missilesAyantTouche = $this->getMissilesAyantToucheDansSequence();
+        foreach ($missilesAyantTouche as $missileAyantTouche) {
+            if ($this->estBateauHorizontal) {
+                $maxColonne = $missileAyantTouche->colonne > $maxColonne ? $missileAyantTouche->colonne : $maxColonne;
+                $minColonne = $missileAyantTouche->colonne < $minColonne ? $missileAyantTouche->colonne : $minColonne;
+            }
+            else {
+                $_rangee = GrilleUtils::parseRangeeVersIndexNumerique($missileAyantTouche->rangee);
+                $maxRangee = $_rangee > $maxRangee ? $_rangee : $maxRangee;
+                $minRangee = $_rangee < $minRangee ? $_rangee : $minRangee;
+            }
+        }
+        // La colonne du missile opposé sera la plus grande valeur de colonne et la rangée sera la même
+        if ($this->estBateauHorizontal && $maxColonne > $colonne) {
+            return Missile::where('colonne', $maxColonne)->where('rangee', GrilleUtils::parseRangee($rangee))->first();
+        }
+        // La colonne du missile opposé sera la plus petite valeur de colonne et la rangée sera la même
+        else if ($this->estBateauHorizontal && $minColonne < $colonne) {
+            return Missile::where('colonne', $minColonne)->where('rangee', GrilleUtils::parseRangee($rangee))->first();
+        }
+        // La rangée du missile opposé sera la plus grande valeur de rangée et la colonne sera la même
+        else if ($this->estBateauVertical && $maxRangee > $rangee) {
+            return Missile::where('colonne', $colonne)->where('rangee', GrilleUtils::parseRangee($maxRangee))->first();
+        }
+        else if ($this->estBateauVertical && $minRangee < $rangee) {
+            return Missile::where('colonne', $colonne)->where('rangee', GrilleUtils::parseRangee($minRangee))->first();
+        }
+        else {
+            throw new InvalidArgumentException("Le missile en argument se doit d'avoir un opposé");
+        }
     }
 }

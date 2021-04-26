@@ -11,15 +11,19 @@ class StateDestructionRechercheEst extends StateDestructionRecherche
 {
     function obtenirProchainMissile()
     {
-        Log::info('DestructionRechercheEst');
         $this->verifierOrientationBateau();
-        $this->verifierLimitesGrilles();
-        $this->verifierMissilesLances();
+        if (!$this->getATermineRecherche()) {
+            $this->verifierLimitesGrilles();
+        }
+        if (!$this->getATermineRecherche()) {
+            $this->verifierMissilesLances();
+        }
         if ($this->getATermineRecherche()) {
             $this->parent->setState(new StateDestructionRechercheOuest($this->parent));
             return $this->parent->getState()->obtenirProchainMissile();
         }
         else {
+            $this->parent->stuckCount = 0;
             $missileEst = new Missile();
             $coordOrigineRecherche = $this->parent->getCoordOrigineRecherche();
             $missileEst->rangee = $coordOrigineRecherche->rangee;
