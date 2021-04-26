@@ -2,31 +2,29 @@
 
 namespace App\IA\StatesDestructionBateau;
 
-use App\IA\GrilleUtils;
 use App\Models\Missile;
 use Illuminate\Support\Facades\Log;
 use App\IA\StatesDestructionBateau\StateDestructionRecherche;
-use App\IA\StatesDestructionBateau\StateDestructionRechercheSud;
+use App\IA\StatesDestructionBateau\StateDestructionRechercheOuest;
 
-class StateDestructionRechercheNord extends StateDestructionRecherche
+class StateDestructionRechercheEst extends StateDestructionRecherche
 {
     function obtenirProchainMissile()
     {
-        Log::info('DestructionRechercheNord');
+        Log::info('DestructionRechercheEst');
         $this->verifierOrientationBateau();
         $this->verifierLimitesGrilles();
         $this->verifierMissilesLances();
         if ($this->getATermineRecherche()) {
-            $this->parent->setState(new StateDestructionRechercheSud($this->parent));
+            $this->parent->setState(new StateDestructionRechercheOuest($this->parent));
             return $this->parent->getState()->obtenirProchainMissile();
         }
         else {
-            $missileNord = new Missile();
+            $missileEst = new Missile();
             $coordOrigineRecherche = $this->parent->getCoordOrigineRecherche();
-            $missileNord->rangee = $coordOrigineRecherche->rangee;
-            $missileNord->colonne = $coordOrigineRecherche->colonne;
-            $missileNord->rangee = GrilleUtils::additionSurRangee($missileNord->rangee, -1);
-            return $missileNord;
+            $missileEst->rangee = $coordOrigineRecherche->rangee;
+            $missileEst->colonne = $coordOrigineRecherche->colonne + 1;
+            return $missileEst;
         }
     }
 
@@ -35,26 +33,26 @@ class StateDestructionRechercheNord extends StateDestructionRecherche
         $coordOrigineRecherche = $this->parent->getCoordOrigineRecherche();
         $y = $coordOrigineRecherche->rangee;
         $x = $coordOrigineRecherche->colonne;
-        $missileNord = Missile::all()
-            ->where('rangee', GrilleUtils::additionSurRangee($y, -1))
-            ->where('colonne', $x)
+        $missileEst = Missile::all()
+            ->where('rangee', $y)
+            ->where('colonne', $x + 1)
             ->first();
-        if ($missileNord != null) {
+        if ($missileEst != null) {
             $this->setATermineRecherche(true);
         }
     }
 
     function verifierLimitesGrilles()
     {
-        $y = $this->parent->getCoordOrigineRecherche()->rangee;
-        if ($y == 'A') {
+        $x = $this->parent->getCoordOrigineRecherche()->colonne;
+        if ($x == 10) {
             $this->setATermineRecherche(true);
         }
     }
 
     function verifierOrientationBateau()
     {
-        if ($this->parent->getEstBateauHorizontal()) {
+        if ($this->parent->getEstBateauVertical()) {
             $this->setATermineRecherche(true);
         }
     }

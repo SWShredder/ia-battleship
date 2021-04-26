@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Missile;
-use Illuminate\Http\Request;
-use App\Http\Resources\MissileResource;
 use App\IA\LancementMissile;
+use Illuminate\Http\Request;
 use App\Models\ResultatMissile;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\MissileResource;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Controleur pour les routes /missiles
@@ -20,7 +23,7 @@ class MissileController extends Controller
      */
     public function lancer()
     {
-        $lancementMissile = LancementMissile::getInstance();
+        $lancementMissile = new LancementMissile();
         $missile = $lancementMissile->lancer();
         return new MissileResource($missile);
     }

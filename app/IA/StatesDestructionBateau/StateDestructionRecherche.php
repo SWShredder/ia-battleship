@@ -1,12 +1,15 @@
 <?php
 
-namespace App\IA;
+namespace App\IA\StatesDestructionBateau;
+
+use App\IA\StateDestructionBateau;
 
 abstract class StateDestructionRecherche
 {
     abstract function obtenirProchainMissile();
     abstract function verifierMissilesLances();
     abstract function verifierLimitesGrilles();
+    abstract function verifierOrientationBateau();
 
     private bool $aTermineRecherche = false;
     protected StateDestructionBateau $parent;
@@ -25,4 +28,5 @@ abstract class StateDestructionRecherche
     {
         return $this->aTermineRecherche;
     }
+
 }

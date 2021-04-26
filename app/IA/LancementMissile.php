@@ -2,60 +2,70 @@
 
 namespace App\IA;
 
-use App\IA\GrilleUtils;
 use App\Models\Missile;
-use Illuminate\Support\Facades\Log;
+use App\Models\MissileCible;
 
 class LancementMissile {
-    static $instance;
 
-    public $missilesALancer;
-    public $indexMissilesALancer;
     public StateIABattleship $aiState;
-    public Missile $dernierMissileLance;
+    private $missilesLances;
+    private $missilesCibles;
 
     public function __construct()
     {
+        $this->missilesCibles = MissileCible::all();
+        $this->missilesLances = Missile::all();
         $this->aiState = new StateRechercheBateau($this);
-        $this->indexMissilesALancer = 0;
-        $this->missilesALancer = [];
-        for ($i=0; $i < 10; $i++) {
-            for ($j=0; $j < 10; $j++) {
-                if (($i % 2 == 0 && $j % 2 == 0) || ($i % 2 != 0 && $j % 2 != 0)) {
-                    $y = GrilleUtils::parseRangee($i);
-                    $missile = new Missile();
-                    $missile->rangee = $y;
-                    $missile->colonne = $j + 1;
-                    $this->missilesALancer[] = $missile;
-                    Log::info($missile->rangee . '-' . $missile->colonne);
-                }
-            }
-        }
-        shuffle($this->missilesALancer);
     }
 
-    public static function getInstance()
+    public function getBateauxAdversaire()
     {
-        if (self::$instance == null) {
-            self::$instance = new LancementMissile();
-        }
-        return self::$instance;
+        return null;
     }
 
-    public function reset()
+    public function getMissilesLances()
     {
-        self::$instance = new LancementMissile();
+        return $this->missilesLances;
+    }
+
+    public function getMissilesCibles()
+    {
+        return $this->missilesCibles;
+    }
+
+    public function getDernierMissileLance()
+    {
+        return $this->missilesLances->sortByDesc('id')->first() ?? new Missile();
+    }
+
+    public function getState()
+    {
+        return $this->aiState;
+    }
+
+    public function setState(StateIABattleship $state)
+    {
+        $this->aiState = $state;
     }
 
     public function lancer()
     {
-        $this->dernierMissileLance = Missile::orderBy('id', 'desc')->first() ?? new Missile();
-        if ($this->dernierMissileLance->resultat_id > 0 && is_a($this->aiState, 'StateRechercheBateau')) {
-            //$this->aiState = new StateDestructionBateau($this);
-        } else if ($this->dernierMissileLance->resultat_id >= 2) {
-            $this->aiState = new StateRechercheBateau($this);
+        $dernierMissile = $this->getDernierMissileLance();
+        $missilesCibles = $this->getMissilesCibles();
+        $resultatMissile = $dernierMissile->resultat_id;
+
+        if ($resultatMissile > 0 || count($missilesCibles) > 0) {
+            $this->ajouterMissileCible($dernierMissile);
+            $this->aiState = new StateDestructionBateau($this);
         }
         return $this->aiState->lancerMissile();
+    }
+
+    public function ajouterMissileCible($missile)
+    {
+        $missileCible = new MissileCible();
+        $missileCible->missile()->associate($missile);
+        $missileCible->save();
     }
 
 }

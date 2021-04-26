@@ -21,4 +21,13 @@ class Missile extends Model
     {
         return $this->belongsTo('App\Models\ResultatMissile');
     }
+
+    /**
+     * Illustre la relation un à un de missile vers missile ciblé
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function missileCible()
+    {
+        return $this->hasOne('App\Models\MissileCible');
+    }
 }

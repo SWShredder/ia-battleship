@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Missile;
-use App\IA\PlacementBateaux;
-use App\Models\BateauCoordonnee;
-use App\Http\Resources\BateauCollection;
 use App\IA\LancementMissile;
+use App\IA\PlacementBateaux;
+use App\Models\MissileCible;
+use App\Models\BateauCoordonnee;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\BateauCollection;
 
 /**
  * Controleur pour la route /bateau
@@ -22,9 +24,9 @@ class BateauController extends Controller
     public function placer()
     {
         // Vide les tables de base de données qui servent pendant la partie
+        MissileCible::truncate();
         BateauCoordonnee::truncate();
-        Missile::truncate();
-        LancementMissile::getInstance()->reset();
+        Missile::query()->delete();
         // Placement des bateaux
         $placement = new PlacementBateaux();
         $placement->debuter();
