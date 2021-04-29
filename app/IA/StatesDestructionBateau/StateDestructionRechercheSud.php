@@ -24,7 +24,6 @@ class StateDestructionRechercheSud extends StateDestructionRecherche
             return $this->parent->getState()->obtenirProchainMissile();
         }
         else {
-            $this->parent->stuckCount = 0;
             $missileSud = new Missile();
             $coordOrigineRecherche = $this->parent->getCoordOrigineRecherche();
             $missileSud->rangee = $coordOrigineRecherche->rangee;

@@ -10,7 +10,6 @@ class StateRechercheBateau extends StateIABattleship
 {
     public function lancerMissile()
     {
-        Log::info('StateRechercheBateau: lancerMissile');
         return $this->obtenirProchainMissile();
     }
 
