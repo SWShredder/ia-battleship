@@ -2,6 +2,9 @@
 
 namespace App\IA;
 
+/**
+ * Représente un état abstrait de lancement de missile
+ */
 abstract class StateIABattleship
 {
     protected LancementMissile $parent;

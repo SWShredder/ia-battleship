@@ -4,12 +4,19 @@ namespace App\IA\StatesDestructionBateau;
 
 use App\IA\GrilleUtils;
 use App\Models\Missile;
-use Illuminate\Support\Facades\Log;
 use App\IA\StatesDestructionBateau\StateDestructionRecherche;
 use App\IA\StatesDestructionBateau\StateDestructionRechercheSud;
 
+/**
+ * État représentant une recherche au nord de la coordonnée actuelle de recherche
+ * @author Yanik Sweeney
+ */
 class StateDestructionRechercheNord extends StateDestructionRecherche
 {
+    /**
+     * Permet d'obtenir le prochain missile à essayer en fonction de la
+     * coordonnée de recherche du parent.
+     */
     function obtenirProchainMissile()
     {
         $this->verifierOrientationBateau();
@@ -33,6 +40,10 @@ class StateDestructionRechercheNord extends StateDestructionRecherche
         }
     }
 
+    /**
+     * Permet de vérifier les missiles lancés autour de la coordonnée actuelle de recherche
+     * pour éliminer des possibilités
+     */
     function verifierMissilesLances()
     {
         $coordOrigineRecherche = $this->parent->getCoordOrigineRecherche();
@@ -47,6 +58,10 @@ class StateDestructionRechercheNord extends StateDestructionRecherche
         }
     }
 
+    /**
+     * Permet de vérifier les limites de la grille pour éliminer des possibilités
+     * si la coordonnée de recherche actuelle est au bord d'une limite
+     */
     function verifierLimitesGrilles()
     {
         $y = $this->parent->getCoordOrigineRecherche()->rangee;
@@ -55,6 +70,10 @@ class StateDestructionRechercheNord extends StateDestructionRecherche
         }
     }
 
+    /**
+     * Permet de vérifier si une orientation possible du bateau a déjà été déterminé
+     * et d'ajuster le prochain missile en conséquence.
+     */
     function verifierOrientationBateau()
     {
         if ($this->parent->getEstBateauHorizontal()) {

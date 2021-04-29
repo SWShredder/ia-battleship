@@ -19,19 +19,30 @@ class StateDestructionBateau extends StateIABattleship
     private $estBateauVertical = false;
     private $estBateauHorizontal = false;
 
+    /**
+     * Constructeur qui initialise des propriétés utilisées par l'état
+     * @param LancementMissile Le parent
+     */
     public function __construct(LancementMissile $lancementMissile) {
         parent::__construct($lancementMissile);
         $this->initPremierMissileAyantTouche();
         $this->initDernierMissileAyantTouche();
         $this->initOrientationBateau();
         $this->initCoordOrigineRecherche();
+        // Le StateDestructionRecherche représente une direction N,S,E,O où lancer le prochain missile
         $this->stateDestructionRecherche = new StateDestructionRechercheNord($this);
     }
 
+    /**
+     * Retourne un missile à lancer en fonction de l'état de recherche de destruction de bateau.
+     * @return App\Models\Missile Un missile à lancer dans le but de détruire un bateau
+     */
     public function lancerMissile()
     {
         $dernierMissile = $this->parent->getDernierMissileLance();
         $missileResultat = $dernierMissile->resultat_id;
+        // Si la condition est vrai, c'est que l'IA n'a touché qu'un seul bateau dans sa séquence et peu donc retourné
+        // à l'état de recherche
         if ($missileResultat >= 2 &&
             count($this->getMissilesAyantToucheDansSequence()) <= GrilleUtils::obtenirTailleBateau($missileResultat)) {
 
@@ -39,6 +50,8 @@ class StateDestructionBateau extends StateIABattleship
             $this->parent->setState(new StateRechercheBateau($this->parent));
             return $this->parent->getState()->lancerMissile();
         }
+        // Si la condition est vrai, c'est que l'IA a touché plusieurs bateaux pendant sa séquence et doit donc tenté
+        // de détruire chacun des bateaux touchés
         else if ($missileResultat >= 2 &&
         count($this->getMissilesAyantToucheDansSequence()) > GrilleUtils::obtenirTailleBateau($missileResultat)) {
             $this->retirerMissilesCiblesBateauAbattu();
@@ -53,6 +66,10 @@ class StateDestructionBateau extends StateIABattleship
         }
     }
 
+    /**
+     * Initialise la propriété premierMissileAyantTouche en fonction du premier missile dont
+     * le résultat est supérieur ou égal à 1 dans la séquence actuelle de lancés de missiles.
+     */
     private function initPremierMissileAyantTouche()
     {
         $missilesCibles = $this->getMissilesAyantToucheDansSequence();
@@ -60,6 +77,10 @@ class StateDestructionBateau extends StateIABattleship
 
     }
 
+    /**
+     * Initialise la propriété dernierMissileAyantTouche en fonction du dernier missile lancé dont
+     * le resultat est supérieur ou égal à 1
+     */
     private function initDernierMissileAyantTouche()
     {
         $missilesLances = $this->parent->getMissilesLances();
@@ -67,6 +88,10 @@ class StateDestructionBateau extends StateIABattleship
         $this->dernierMissileAyantTouche = $dernierMissileCible;
     }
 
+    /**
+     * Initialise les propriétés estBateauVertical et estBateauHorizontal en fonction du permier missile ayant
+     * touché et du dernier missile ayant touché dans la séquence actuelle de lancement de missiles
+     */
     private function initOrientationBateau()
     {
         $dernierMissileAyantTouche = $this->dernierMissileAyantTouche;
@@ -83,6 +108,10 @@ class StateDestructionBateau extends StateIABattleship
         }
     }
 
+    /**
+     * Initialise la coordonnée d'origine de recherche qui est utilisé par les états StateDestructionRecherche
+     * pour savoir à partir de où faire la recherche
+     */
     private function initCoordOrigineRecherche()
     {
         if ($this->dernierMissileAyantTouche == $this->parent->getDernierMissileLance()) {
@@ -93,16 +122,30 @@ class StateDestructionBateau extends StateIABattleship
         }
     }
 
+    /**
+     * Règle l'état de StateDestructionRecherche actuel. Cet état est une direction dans laquelle vérifier
+     * si un missile devrait être lancé
+     */
     public function setState(StateDestructionRecherche $state)
     {
         $this->stateDestructionRecherche = $state;
     }
 
+    /**
+     * Retourne l'état actuel qui représente la direction dans laquelle vérifier si un missile devrait être
+     * lancé
+     * @return StateDestructionRecherche Un état qui représente la direction dans laquelle vérifier si un missile
+     * devrait être lancé
+     */
     public function getState()
     {
         return $this->stateDestructionRecherche;
     }
 
+    /**
+     * Renvoit la prochain coordonnée de recherche si la coordonnée actuelle de recherche ne permet pas de lancer
+     * un missile.
+     */
     public function prochaineCoordOrigineRecherche()
     {
         $this->initPremierMissileAyantTouche();
@@ -121,26 +164,46 @@ class StateDestructionBateau extends StateIABattleship
         $this->coordOrigineRecherche = $this->premierMissileAyantTouche;
     }
 
+    /**
+     * Permet d'obtenir la coordonnée d'origine de recherche pour les états de recherche
+     * @return App\Models\Missile Un missile possèdant les coordonnées de recherche désirées
+     */
     public function getCoordOrigineRecherche()
     {
         return $this->coordOrigineRecherche;
     }
 
+    /**
+     * Permet d'obtenir le dernier missile ayant touché
+     * @return App\Models\Missile Le dernier missile ayant touché
+     */
     public function getDernierMissileAyantTouche()
     {
         return $this->dernierMissileAyantTouche;
     }
 
+    /**
+     * Permet de savoir si le bateau visé est possiblement à la verticale
+     * @return bool Vrai si le bateau est possiblement placé à la verticale dans la grille
+     */
     public function getEstBateauVertical()
     {
         return $this->estBateauVertical;
     }
 
+    /**
+     * Permet de savoir si le bateau visé est possiblement à l'horizontal
+     * @return bool Vrai si le bateau est possiblement placé à l'horizontal
+     */
     public function getEstBateauHorizontal()
     {
         return $this->estBateauHorizontal;
     }
 
+    /**
+     * Retourne un array de missiles qui ont touché dans la séquence actuelle.
+     * @return Array Un array contenant les missiles qui ont touché dans la séquence actuelle.
+     */
     public function getMissilesAyantToucheDansSequence()
     {
         $missilesAyantTouche = [];
@@ -153,6 +216,11 @@ class StateDestructionBateau extends StateIABattleship
         return $missilesAyantTouche;
     }
 
+    /**
+     * Permet d'obtenier le missile qui est à l'opposé du missile donnée en argument
+     * @return App\Models\Missile Un missile dont les coordonnées sont à l'opposées du missile donné
+     * en argument
+     */
     public function getMissileCoordOpposee($missile)
     {
         $rangee = GrilleUtils::parseRangeeVersIndexNumerique($missile->rangee);

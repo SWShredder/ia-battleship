@@ -24,8 +24,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /**
  * Routes pour battleship-ia
  */
-// ->middleware(['auth:sanctum'])
-Route::prefix('battleship-ia')->middleware(['throttle:60,1'])->group(function () {
+Route::prefix('battleship-ia')->middleware(['auth:sanctum'])->group(function () {
     Route::post('bateaux/placer', [BateauController::class, 'placer']);
     Route::post('missiles', [MissileController::class, 'lancer']);
     Route::put('missiles/{coordonnees}', [MissileController::class, 'store']);

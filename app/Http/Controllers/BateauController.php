@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Missile;
-use App\IA\LancementMissile;
 use App\IA\PlacementBateaux;
 use App\Models\MissileCible;
 use App\Models\BateauCoordonnee;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Resources\BateauCollection;
 
 /**
@@ -24,9 +23,11 @@ class BateauController extends Controller
     public function placer()
     {
         // Vide les tables de base de données qui servent pendant la partie
+        Schema::disableForeignKeyConstraints();
         MissileCible::truncate();
         BateauCoordonnee::truncate();
-        Missile::query()->delete();
+        Missile::truncate();
+        Schema::enableForeignKeyConstraints();
         // Placement des bateaux
         $placement = new PlacementBateaux();
         $placement->debuter();
