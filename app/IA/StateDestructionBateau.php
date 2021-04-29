@@ -5,7 +5,6 @@ namespace App\IA;
 use App\Models\Missile;
 use App\Models\MissileCible;
 use App\IA\StateIABattleship;
-use Illuminate\Support\Facades\Log;
 use App\IA\StatesDestructionBateau\StateDestructionRecherche;
 use App\IA\StatesDestructionBateau\StateDestructionRechercheNord;
 use InvalidArgumentException;
@@ -259,7 +258,6 @@ class StateDestructionBateau extends StateIABattleship
         else {
             throw new InvalidArgumentException("Le missile en argument se doit d'avoir un opposé");
         }
-        Log::info('Missile opposé = ' . $missile->rangee . '-' . $missile->colonne);
         return $missile;
     }
 
@@ -289,7 +287,6 @@ class StateDestructionBateau extends StateIABattleship
                                     ->where('rangee', GrilleUtils::parseRangee($rangeeDernierMissile + $_i))
                                     ->first();
             }
-            Log::info('Retrait missiles cibles bateau abattu : ' . $missile->rangee . '-' . $missile->colonne);
             $missileCible = $missilesCibles->where('missile_id', $missile->id)->first();
             $missileCible->delete();
         }

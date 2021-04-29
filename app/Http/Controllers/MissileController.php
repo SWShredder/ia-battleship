@@ -10,7 +10,6 @@ use App\Models\ResultatMissile;
 use App\Models\BateauCoordonnee;
 use App\Http\Resources\MissileResource;
 use App\IA\GrilleUtils;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 /**
