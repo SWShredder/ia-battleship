@@ -10,6 +10,7 @@ use App\Models\ResultatMissile;
 use App\Models\BateauCoordonnee;
 use App\Http\Resources\MissileResource;
 use App\IA\GrilleUtils;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 /**
@@ -84,7 +85,7 @@ class MissileController extends Controller
         if ($colonne > 10 || $colonne < 1) {
             return false;
         }
-        if ($request->resultat == null || $request->resultat > 6 || $request->resultat < 0) {
+        if (!is_int($request->resultat) || $request->resultat > 6 || $request->resultat < 0) {
             return false;
         }
         return true;
